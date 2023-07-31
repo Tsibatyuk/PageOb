@@ -1,5 +1,6 @@
 package pages;
 
+import driver.DriverPoll;
 import lombok.SneakyThrows;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -15,14 +16,12 @@ import java.util.List;
 abstract public class BasePage {
 
 
-    protected WebDriver driver;
     protected WebDriverWait wait;
     private int BASE_WAIT = 5;
 
-    public BasePage(WebDriver driver) {
-        PageFactory.initElements(driver, this);
-        this.driver = driver;
-        wait = new WebDriverWait(driver, Duration.ofSeconds(BASE_WAIT));
+    public BasePage() {
+        wait = new WebDriverWait(DriverPoll.getDriver(), Duration.ofSeconds(15));
+        PageFactory.initElements(DriverPoll.getDriver(), this);
     }
 
     protected WebElement waitUntilElementToBeVisibleByXpath(String locator) {
@@ -45,18 +44,15 @@ abstract public class BasePage {
         return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(locator)));
     }
 
-    protected List<WebElement> waitUntilElementsToBeVisibleByXpath(String locator) {
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(locator)));
-        return driver.findElements(By.xpath(locator));
-    }
 
 
 
-    public void goToNextTab(int tabNumber) {
-        waitUntilNumberOfTabToBe(tabNumber);
-        ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
-        driver.switchTo().window(tabs.get(tabNumber - 1));
-    }
+
+//    public void goToNextTab(int tabNumber) {
+//        waitUntilNumberOfTabToBe(tabNumber);
+//        ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
+//        driver.switchTo().window(tabs.get(tabNumber - 1));
+//    }
 
     public void waitUntilNumberOfTabToBe(int tabNumber) {
         wait.until(ExpectedConditions.numberOfWindowsToBe(tabNumber));
@@ -92,16 +88,11 @@ abstract public class BasePage {
         }
     }
 
-
-    public void openPage(String url) {
-        driver.get(url);
-    }
-
     protected void setValue(WebElement element, String value){
         wait.until(ExpectedConditions.elementToBeClickable(element)).sendKeys(value);
     }
 
-    public String getURL() {
-        return driver.getCurrentUrl();
-    }
+//    public String getURL() {
+//        return driver.getCurrentUrl();
+//    }
 }
