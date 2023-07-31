@@ -1,33 +1,32 @@
 package tests;
 
 import abstractpages.Listener;
-import io.github.bonigarcia.wdm.WebDriverManager;
-import lombok.SneakyThrows;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.JavascriptExecutor;
+import driver.Browser;
+import driver.DriverFactory;
+import driver.DriverPoll;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Listeners;
-import ru.stqa.selenium.factory.LooseWebDriverPool;
-import ru.stqa.selenium.factory.WebDriverPool;
+import utiles.Config;
+import utiles.PropertiesUtil;
 
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
-import static tests.WebDriver.setupWebDriver;
 
 @Listeners(Listener.class)
 abstract public class BaseTest{
+
+
+    @BeforeMethod
+    public void setUpDriver() {
+        WebDriver driver = DriverFactory.getDriver(Browser.FIREFOX);
+        DriverPoll.setWebDriver(driver);
+        Config.setBaseUrl(PropertiesUtil.getProperty("url"));
+    }
+
+    @AfterMethod
+    public void quiteDriver() {
+        DriverPoll.quitDriver();
+    }
 
 
 
@@ -39,7 +38,7 @@ abstract public class BaseTest{
 //    protected static List<String> options;
 //    protected static WebDriverPool driverPool = new LooseWebDriverPool();
 //    protected Logger logger = LoggerFactory.getLogger(this.getClass());
-    protected WebDriver driver;
+//    protected WebDriver driver;
 //    protected LoginPage loginPage;
 //    protected String deployedAppVersion = "";
 //
@@ -102,76 +101,88 @@ abstract public class BaseTest{
 //    }
 
     //type name of the browser you're using in this variable (chrome or firefox)
-    private static final String BROWSER_NAME = "firefox";
-    //put false here if you want to see browser or true to headless mode
-    private final boolean headless = false;
+//    private static final String BROWSER_NAME = "firefox";
+//    //put false here if you want to see browser or true to headless mode
+//    private final boolean headless = false;
+//
+//    @BeforeMethod
+//    public void setUp() throws Exception {
+//        switch (BROWSER_NAME) {
+//            case ("chrome") -> {
+//                ChromeOptions chromeOptions = new ChromeOptions();
+//                chromeOptions.setHeadless(headless);
+//                WebDriverManager.chromedriver().setup();
+//                driver = new ChromeDriver(chromeOptions);
+//                if (!headless) {
+//                    driver.manage().window().maximize();
+//                }
+//            }
+//            case ("firefox") -> {
+//                FirefoxOptions firefoxOptions = new FirefoxOptions();
+//                firefoxOptions.setHeadless(headless);
+//                WebDriverManager.firefoxdriver().setup();
+//                driver = new FirefoxDriver(firefoxOptions);
+//                driver.manage().window().maximize();
+//                if (!headless) {
+//                    driver.manage().window().maximize();
+//                }
+//            }
+//            default -> throw new Exception("You chose not valid browser!");
+//        }
+//    }
+//    public void sleep(int seconds) {
+//        try {
+//            Thread.sleep(seconds * 1000L);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    public void scroll(int pixels) {
+//        JavascriptExecutor js = (JavascriptExecutor) driver;
+//        js.executeScript("window.scrollBy(0," + pixels + ")", "");
+//    }
+//
+//    public void switchToTab(int tabNumber) {
+//        ArrayList<String> tab = new ArrayList<>(driver.getWindowHandles());
+//        driver.switchTo().window(tab.get(tabNumber - 1));
+//    }
+//
+//    public void goBack() {
+//        driver.navigate().back();
+//    }
+//
+//    public void switchToNextTab() {
+//        driver.getWindowHandles().forEach(tab -> driver.switchTo().window(tab));
+//    }
+//
+//    @AfterMethod
+//    public void closeWindow() {
+//        driver.quit();
+//    }
+//
+//    public WebDriver getDriver() {
+//        return driver;
+//    }
+//
+//
+//
+//
+//
+//    public boolean urlContains(String urlPath) {
+//        return driver.getCurrentUrl().contains(urlPath);
+//    }
 
-    @BeforeMethod
-    public void setUp() throws Exception {
-        switch (BROWSER_NAME) {
-            case ("chrome") -> {
-                ChromeOptions chromeOptions = new ChromeOptions();
-                chromeOptions.setHeadless(headless);
-                WebDriverManager.chromedriver().setup();
-                driver = new ChromeDriver(chromeOptions);
-                if (!headless) {
-                    driver.manage().window().maximize();
-                }
-            }
-            case ("firefox") -> {
-                FirefoxOptions firefoxOptions = new FirefoxOptions();
-                firefoxOptions.setHeadless(headless);
-                WebDriverManager.firefoxdriver().setup();
-                driver = new FirefoxDriver(firefoxOptions);
-                driver.manage().window().maximize();
-                if (!headless) {
-                    driver.manage().window().maximize();
-                }
-            }
-            default -> throw new Exception("You chose not valid browser!");
-        }
-    }
-    public void sleep(int seconds) {
-        try {
-            Thread.sleep(seconds * 1000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void scroll(int pixels) {
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("window.scrollBy(0," + pixels + ")", "");
-    }
-
-    public void switchToTab(int tabNumber) {
-        ArrayList<String> tab = new ArrayList<>(driver.getWindowHandles());
-        driver.switchTo().window(tab.get(tabNumber - 1));
-    }
-
-    public void goBack() {
-        driver.navigate().back();
-    }
-
-    public void switchToNextTab() {
-        driver.getWindowHandles().forEach(tab -> driver.switchTo().window(tab));
-    }
-
-    @AfterMethod
-    public void closeWindow() {
-        driver.quit();
-    }
-
-    public WebDriver getDriver() {
-        return driver;
-    }
-
-
-
-
-
-    public boolean urlContains(String urlPath) {
-        return driver.getCurrentUrl().contains(urlPath);
-    }
+//    @BeforeMethod
+//    public void setUpDriver() {
+//        WebDriver driver = DriverFactory.getDriver(Browser.CHROME);
+//        DriverPoll.setWebDriver(driver);
+//        Config.setBaseUrl(PropertiesUtil.getProperty("url"));
+//    }
+//
+//    @AfterMethod
+//    public void quiteDriver() {
+//        DriverPoll.quitDriver();
+//    }
 
 }

@@ -1,17 +1,16 @@
 package tests.djini;
 
-import org.testng.ITestContext;
+
 import org.testng.annotations.Test;
 import pages.djini.User;
 import pages.djini.WelcomePage;
 import tests.BaseTest;
 
-public class Registration extends BaseTest {
+public class RegistrationTests extends BaseTest {
 
     @Test
-    public void registrationTest2(ITestContext context) {
-        WelcomePage welcomePage = new WelcomePage(driver);
-        context.getAttribute("hi");
+    public void registrationTest2() {
+        WelcomePage welcomePage = new WelcomePage();
 
         welcomePage
                 .openDjini()
@@ -19,9 +18,6 @@ public class Registration extends BaseTest {
                 .loginUser(User.builder().build())
                 .clickTheEnterBtn()
                 .checkTheUrl();
-
-
-
     }
 
 }
